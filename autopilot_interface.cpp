@@ -628,13 +628,13 @@ start()
 	// --------------------------------------------------------------------------
 
 	// Wait for initial position ned
-	/*while ( not ( current_messages.time_stamps.local_position_ned &&
+	while ( not ( current_messages.time_stamps.local_position_ned &&
 				  current_messages.time_stamps.attitude            )  )
 	{
 		if ( time_to_exit )
 			return;
-		usleep(500000);
-	}*/
+		usleep(500);
+	}
 
 	// copy initial position ned
 	Mavlink_Messages local_data = current_messages;
