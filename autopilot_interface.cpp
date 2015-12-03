@@ -633,7 +633,7 @@ start()
 	{
 		if ( time_to_exit )
 			return;
-		usleep(500);
+		usleep(500000);
 	}
 
 	// copy initial position ned
