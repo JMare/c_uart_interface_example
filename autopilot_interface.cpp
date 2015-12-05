@@ -556,9 +556,6 @@ enable_position_datastream()
 	{
 		printf("Enable Position Datastream\n");
 
-		// ----------------------------------------------------------------------
-		//   TOGGLE OFF-BOARD MODE
-		// ----------------------------------------------------------------------
 
 		// Sends the command to go off-board
 		int success = req_pos_datastream();
@@ -583,15 +580,16 @@ Autopilot_Interface::
 req_pos_datastream()
 {
 	// Prepare command for off-board mode
-	mavlink_command_long_t com;
+	mavlink_request_data_stream_t com;
 	com.target_system    = system_id;
 	com.target_component = autopilot_id;
-	com.command          = MAV_DATA_STREAM_POSITION;
-	com.confirmation     = true;
+	com.req_stream_id = 113;
+	com.req_message_rate = 5;
+	com.start_stop = 1;
 
 	// Encode
 	mavlink_message_t message;
-	mavlink_msg_command_long_encode(system_id, companion_id, &message, &com);
+	mavlink_msg_request_data_stream_encode(system_id, companion_id, &message, &com);
 
 	// Send the message
 	int len = serial_port->write_message(message);
@@ -682,7 +680,7 @@ start()
 	// // --------------------------------------------------------------------------
 	
 	enable_position_datastream();
-
+	
 
 	// --------------------------------------------------------------------------
 	//   GET INITIAL POSITION
