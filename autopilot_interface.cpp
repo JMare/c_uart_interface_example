@@ -545,6 +545,60 @@ toggle_offboard_control( bool flag )
 	return len;
 }
 
+//function added by james to attempt to request datastream
+
+void
+Autopilot_Interface::
+enable_position_datastream()
+{
+	// Should only send this command once
+	if ( control_status == false )
+	{
+		printf("Enable Position Datastream\n");
+
+		// ----------------------------------------------------------------------
+		//   TOGGLE OFF-BOARD MODE
+		// ----------------------------------------------------------------------
+
+		// Sends the command to go off-board
+		int success = req_pos_datastream();
+
+		// Check the command was written
+		if ( success )
+	//		control_status = true;
+			printf("Data stream request successfull\n");
+		else
+		{
+			fprintf(stderr,"Error: request for position data stream fail\n");
+			//throw EXIT_FAILURE;
+		}
+
+		printf("\n");
+
+	} // end: if not offboard_status
+
+}
+int
+Autopilot_Interface::
+req_pos_datastream()
+{
+	// Prepare command for off-board mode
+	mavlink_command_long_t com;
+	com.target_system    = system_id;
+	com.target_component = autopilot_id;
+	com.command          = MAV_DATA_STREAM_POSITION;
+	com.confirmation     = true;
+
+	// Encode
+	mavlink_message_t message;
+	mavlink_msg_command_long_encode(system_id, companion_id, &message, &com);
+
+	// Send the message
+	int len = serial_port->write_message(message);
+
+	// Done!
+	return len;
+}
 
 // ------------------------------------------------------------------------------
 //   STARTUP
@@ -621,6 +675,13 @@ start()
 		printf("GOT AUTOPILOT COMPONENT ID: %i\n", autopilot_id);
 		printf("\n");
 	}
+
+
+	// --------------------------------------------------------------------------
+	// ENABLE POSITION DATASTREAM
+	// // --------------------------------------------------------------------------
+	
+	enable_position_datastream();
 
 
 	// --------------------------------------------------------------------------

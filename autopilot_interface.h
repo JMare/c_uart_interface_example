@@ -264,6 +264,9 @@ public:
 	void enable_offboard_control();
 	void disable_offboard_control();
 
+	//added by james
+	void enable_position_datastream();
+	
 	void start();
 	void stop();
 
@@ -289,6 +292,8 @@ private:
 
 	int toggle_offboard_control( bool flag );
 	void write_setpoint();
+
+	int req_pos_datastream();
 
 };
 
